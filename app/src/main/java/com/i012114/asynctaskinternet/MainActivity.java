@@ -12,6 +12,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.IOException;
+
 public class MainActivity extends AppCompatActivity {
 
     ProgressBar progressBar;
@@ -54,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
         if (isOnLine()){
 
             MyTask task = new MyTask();
-            task.execute();
+            task.execute("https://jsonplaceholder.typicode.com/posts");
 
             //Toast.makeText(this, "Cargar datos", Toast.LENGTH_SHORT).show();
 
@@ -90,22 +92,29 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
-        protected String doInBackground(String... strings) {
+        protected String doInBackground(String... params) {
 
 
-            for (int i=1; i<50; i++){
-                //
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-
-                publishProgress(String.valueOf(i));
-
+//            for (int i=1; i<50; i++){
+//                //
+//                try {
+//                    Thread.sleep(100);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//
+//                publishProgress(String.valueOf(i));
+//
+//            }
+//
+//            return null;
+            String contend = null;
+            try {
+                contend = HttpManager.getData(params [0]);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-
-            return null;
+            return contend;
         }
 
         @Override
@@ -121,6 +130,7 @@ public class MainActivity extends AppCompatActivity {
             super.onPostExecute(s);
 
             progressBar.setVisibility(View.GONE);
+            processData(s);
 
         }
     }
